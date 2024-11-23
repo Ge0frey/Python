@@ -12,6 +12,3 @@ elif operator == '*':
    result = num1 * num2
 
 print(f"{result}")
-# print(f"difference: {result}")
-# print(f"divide: {result}")
-# print(f"multiply: {result}")
