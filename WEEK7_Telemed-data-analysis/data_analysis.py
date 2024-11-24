@@ -1,63 +1,70 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 
-# load the csv file
+
+# Task 1: Load and Explore the Dataset
 df = pd.read_csv('hospital_db.csv')
 
 # Display the first few rows of the dataset
 print("First few rows of the dataset:")
 print(df.head())
 
-# Display general info about the dataset
+# Display dataset info
 print("\nDataset Info:")
-df.info()
+print(df.info())
 
-# Display summary statistics
-print("\nSummary Statistics:")
-print(df.describe(include='all'))
-
-# Clean the data
-# Example: Check for missing values
+# Check for missing values
 print("\nMissing values per column:")
 print(df.isnull().sum())
 
-# Handle missing values (dropping rows with missing values)
-df = df.dropna()
+# Task 2: Basic Data Analysis
+# Basic statistics for numeric columns
+print("\nBasic Statistics (mean, std, min, max, etc.):")
+print(df.describe())
 
-# Basic Data Analysis
-# Filter only numeric columns
-numeric_df = df.select_dtypes(include=['number'])
+# Group by gender and calculate the mean (numeric only)
+# Select numeric columns for the mean calculation
+numeric_columns = df.select_dtypes(include=['number']).columns
+print("\nGroup by gender and compute mean (numeric only):")
+grouped_by_gender = df[numeric_columns].groupby(df['gender']).mean()
+print(grouped_by_gender)
 
-# Calculate the correlation matrix for numeric columns
-correlation_matrix = numeric_df.corr()
+# Group by language and calculate the mean (numeric only)
+print("\nGroup by language and compute mean (numeric only):")
+grouped_by_language = df[numeric_columns].groupby(df['language']).mean()
+print(grouped_by_language)
 
-# Display the correlation matrix
-print("\nCorrelation matrix for numeric columns:")
-print(correlation_matrix)
-
-# Data Visualizations
-# Example: Histogram of a specific column (update 'patient_id' to a valid column name if needed)
-plt.figure(figsize=(8, 6))
-sns.histplot(df['patient_id'], kde=True)
-plt.title('Histogram of Patient IDs')
+# Task 3: Data Visualization
+# Plot distribution of patient IDs
+plt.figure(figsize=(10, 6))
+sns.histplot(df['patient_id'], kde=True, bins=30)
+plt.title('Distribution of Patient IDs')
 plt.xlabel('Patient ID')
 plt.ylabel('Frequency')
 plt.show()
 
-
-# Example: Boxplot for a categorical variable and a numeric column
-plt.figure(figsize=(8, 6))
-sns.boxplot(x='gender', y='patient_id', data=df)
-plt.title('Boxplot of Patient ID by Gender')
+# Plot count of patients by gender
+plt.figure(figsize=(10, 6))
+sns.countplot(x='gender', data=df)
+plt.title('Count of Patients by Gender')
 plt.xlabel('Gender')
-plt.ylabel('Patient ID')
+plt.ylabel('Count')
 plt.show()
 
-# Findings and Observations
-# Add meaningful observations based on your analysis
-print("\nFindings:")
-print("1. The correlation matrix only includes the 'patient_id' column as it is the only numeric field.")
-print("2. The histogram of 'patient_id' shows its distribution. This field likely serves as an identifier and may not be analytically useful.")
-print("3. Gender-based boxplot highlights how 'patient_id' values are distributed by gender.")
+# Plot count of patients by language
+plt.figure(figsize=(10, 6))
+sns.countplot(x='language', data=df)
+plt.title('Count of Patients by Language')
+plt.xlabel('Language')
+plt.ylabel('Count')
+plt.show()
 
+# Scatter plot (example: relationship between patient_id and date_of_birth)
+# Convert 'date_of_birth' to string for plotting
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df, x='patient_id', y=df['date_of_birth'].astype(str))  
+plt.title('Patient ID vs Date of Birth')
+plt.xlabel('Patient ID')
+plt.ylabel('Date of Birth')
+plt.show()
